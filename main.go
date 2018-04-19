@@ -23,13 +23,18 @@ func initMiddlewares(e *echo.Echo, conf *config.Config) {
 }
 
 func initRoutes(e *echo.Echo, conf *config.Config, db *gorm.DB) {
-
 	router.Init(e, conf, db)
-
 }
 
 func initDB(db *gorm.DB) {
-	db.AutoMigrate(&model.Attachment{}, &model.Log{})
+	db.AutoMigrate(
+		&model.Attachment{},
+		&model.Log{},
+		&model.Article{},
+		&model.Tag{},
+		&model.Category{},
+		&model.Evaluation{},
+	)
 }
 
 func main() {

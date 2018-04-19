@@ -6,10 +6,10 @@ import (
 
 type Attachment struct {
 	gorm.Model
-	Symbol   string `gorm:"type:varchar(255);not null;unique"`
-	Filename string `gorm:"type:varchar(255);not null"`
-	Year     string `gorm:"type:varchar(255);not null"`
-	Month    string `gorm:"type:varchar(255);not null"`
-	Date     string `gorm:"type:varchar(255);not null"`
-	ExtName  string `gorm:"type:varchar(255);not null"`
+	Symbol   string `gorm:"not null;unique"`
+	Filename string `gorm:"not null"`
+	Year     string `gorm:"not null"`
+	Month    string `gorm:"not null"`
+	Date     string `gorm:"not null"`
+	ExtName  string `gorm:"not null"`
 }

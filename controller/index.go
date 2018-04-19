@@ -11,5 +11,7 @@ type IndexController struct {
 }
 
 func (ctx *IndexController) Default(c echo.Context) error {
-	return c.Render(http.StatusOK, "index", "Hello World")
+	return c.Render(http.StatusOK, "index.html", map[string]interface{}{
+		"Hello": "World!",
+	})
 }

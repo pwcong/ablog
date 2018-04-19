@@ -14,6 +14,8 @@ host = "0.0.0.0"
 port = 7001
 
 [auth]
+username = "root"
+password = "root"
 secret = "ABLOG"
 expiredTime = 86400
 
@@ -42,6 +44,8 @@ type Config struct {
 }
 
 type AuthConfig struct {
+	Username    string
+	Password    string
 	Secret      string
 	ExpiredTime int
 }
