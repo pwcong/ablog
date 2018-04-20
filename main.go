@@ -99,4 +99,9 @@ func init() {
 		log.Fatal(err)
 	}
 
+	err = utils.MkdirIFNotExist("view")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }

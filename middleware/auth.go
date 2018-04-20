@@ -16,7 +16,15 @@ type AuthMiddleware struct {
 func (ctx *AuthMiddleware) AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		tokenString := c.Request().Header.Get("Token")
+		cookie, err := c.Request().Cookie("Token")
+
+		var tokenString string
+		if err == nil {
+			fmt.Println(cookie.Value)
+			tokenString = cookie.Value
+		} else {
+			tokenString = c.Request().Header.Get("Token")
+		}
 
 		if tokenString == "" {
 			return errors.New("lack of token")
@@ -35,15 +43,7 @@ func (ctx *AuthMiddleware) AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 			return errors.New("invalid token")
 		}
 
-		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			id, ok := claims["id"]
-			if !ok {
-				return errors.New("invalid token")
-			} else {
-				c.Set("id", id)
-				c.Set("token", tokenString)
-			}
-		} else {
+		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
 			return errors.New("invalid token")
 		}
 

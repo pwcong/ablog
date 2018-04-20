@@ -69,7 +69,12 @@ func (ctx *AttachmentService) SaveAttachment(file *multipart.FileHeader) (model.
 			ExtName:  GetExtension(file.Filename),
 		}
 
-		dir := filepath.Join(filepath.Dir(os.Args[0]), "public/"+img.Year+"/"+img.Month+"/"+img.Date)
+		root, err := os.Getwd()
+		if err != nil {
+			root = filepath.Dir(os.Args[0])
+		}
+
+		dir := filepath.Join(root, "public/"+img.Year+"/"+img.Month+"/"+img.Date)
 
 		err = os.MkdirAll(dir, 0666)
 		if err != nil {
