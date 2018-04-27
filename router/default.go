@@ -31,5 +31,8 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.POST("/auth/login", authController.Login)
 	apiGroup.POST("/attachment/upload", attachmentController.Upload, authMiddleware.AuthToken)
 	apiGroup.GET("/categories", categoryController.GetCategories)
-
+	apiGroup.GET("/category/:id", categoryController.GetCategory)
+	apiGroup.POST("/category", categoryController.AddCategory, authMiddleware.AuthToken)
+	apiGroup.POST("/category/:id", categoryController.UpdateCategory, authMiddleware.AuthToken)
+	apiGroup.POST("/category/:id/delete", categoryController.DelCategory, authMiddleware.AuthToken)
 }

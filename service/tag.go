@@ -37,11 +37,7 @@ func (ctx *TagService) UpdateTag(id uint, name string) (model.Tag, error) {
 
 	tag.Name = name
 
-	if err := db.Update(tag).Error; err != nil {
-		return model.Tag{}, err
-	}
-
-	return tag, nil
+	return tag, db.Save(tag).Error
 
 }
 
@@ -59,13 +55,30 @@ func (ctx *TagService) GetTag(id uint) (model.Tag, error) {
 
 }
 
-func (ctx *TagService) GetTags(pageSize uint, pageNo uint) (model.Page, error) {
+func (ctx *TagService) GetTags(pageNo int, pageSize int) (model.Page, error) {
+	db := ctx.Base.DB
 
-	return model.Page{}, nil
+	var totalSize int
+	if err := db.Model(&model.Category{}).Count(&totalSize).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	var tags []model.Tag
+	if err := db.Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&tags).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	return model.Page{
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		CurrentSize: len(tags),
+		TotalSize:   totalSize,
+		Data:        tags,
+	}, nil
 
 }
 
-func (ctx *TagService) DelTag(id uint) (model.Tag, error) {
+func (ctx *TagService) DelTag(id uint) error {
 
 	db := ctx.Base.DB
 
@@ -73,19 +86,20 @@ func (ctx *TagService) DelTag(id uint) (model.Tag, error) {
 
 	notFound := db.Where("id = ?", id).First(&tag).RecordNotFound()
 	if notFound {
-		return model.Tag{}, errors.New("tag is not existed")
+		return errors.New("tag is not existed")
 	}
 
 	tx := db.Begin()
+
+	if err := tx.Model(&tag).Association("Articles").Clear().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	if err := tx.Delete(&tag).Error; err != nil {
 		tx.Rollback()
-		return model.Tag{}, err
+		return err
 	}
 
-	if err := tx.Model(&tag).Association("Articles").Delete(tag).Error; err != nil {
-		tx.Rollback()
-		return model.Tag{}, err
-	}
-
-	return tag, tx.Commit().Error
+	return tx.Commit().Error
 }

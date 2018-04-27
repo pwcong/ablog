@@ -9,8 +9,8 @@ import (
 )
 
 type AuthForm struct {
-	Username string `json:"username" xml:"username" form:"username" query:"username"`
-	Password string `json:"password" xml:"password" form:"password" query:"password"`
+	Username string `json:"username" form:"username"`
+	Password string `json:"password" form:"password"`
 }
 
 type AuthController struct {

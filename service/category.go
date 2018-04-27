@@ -33,7 +33,7 @@ func (ctx *CategoryService) UpdateCategory(id uint, name string) (model.Category
 
 	category.Name = name
 
-	return category, db.Update(category).Error
+	return category, db.Save(&category).Error
 
 }
 
@@ -75,7 +75,7 @@ func (ctx *CategoryService) GetCategories(pageNo int, pageSize int) (model.Page,
 
 }
 
-func (ctx *CategoryService) DelCategory(id uint) (model.Category, error) {
+func (ctx *CategoryService) DelCategory(id uint) error {
 
 	db := ctx.Base.DB
 
@@ -83,8 +83,21 @@ func (ctx *CategoryService) DelCategory(id uint) (model.Category, error) {
 
 	notFound := db.Where("id = ?", id).First(&category).RecordNotFound()
 	if notFound {
-		return model.Category{}, errors.New("category is not existed")
+		return errors.New("category is not existed")
 	}
 
-	return category, db.Delete(&category).Error
+	tx := db.Begin()
+
+	if err := tx.Model(&category).Association("Articles").Clear().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Delete(&category).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+
 }
