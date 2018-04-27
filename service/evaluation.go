@@ -24,7 +24,7 @@ func (ctx *EvaluationService) AddEvaluation(ip string, score int, content string
 	return evaluation, db.Create(&evaluation).Error
 }
 
-func (ctx *EvaluationService) getEvaluation(id uint) (model.Evaluation, error) {
+func (ctx *EvaluationService) GetEvaluation(id uint) (model.Evaluation, error) {
 	db := ctx.Base.DB
 
 	var evaluation model.Evaluation
@@ -38,7 +38,7 @@ func (ctx *EvaluationService) getEvaluation(id uint) (model.Evaluation, error) {
 
 }
 
-func (ctx *EvaluationService) getEvaluations(articleID uint) ([]model.Evaluation, error) {
+func (ctx *EvaluationService) GetEvaluations(articleID uint) ([]model.Evaluation, error) {
 	db := ctx.Base.DB
 
 	var evaluations []model.Evaluation

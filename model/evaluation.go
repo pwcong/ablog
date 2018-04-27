@@ -1,11 +1,7 @@
 package model
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 type Evaluation struct {
-	gorm.Model
+	BaseModel
 	IP        string
 	Score     int
 	Content   string `gorm:"type:text;"`

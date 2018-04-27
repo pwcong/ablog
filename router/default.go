@@ -21,12 +21,15 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	baseController := &controller.BaseController{Conf: conf, Service: baseService}
 
 	indexController := &controller.IndexController{Base: baseController}
-	attachmentController := &controller.AttachmentController{Base: baseController}
 	authController := &controller.AuthController{Base: baseController}
+	attachmentController := &controller.AttachmentController{Base: baseController}
+	categoryController := &controller.CategoryController{Base: baseController}
 
 	e.GET("/", indexController.Default)
 
-	e.POST("/api/auth/login", authController.Login)
-	e.POST("/api/attachment/upload", attachmentController.Upload, authMiddleware.AuthToken)
+	apiGroup := e.Group("/api")
+	apiGroup.POST("/auth/login", authController.Login)
+	apiGroup.POST("/attachment/upload", attachmentController.Upload, authMiddleware.AuthToken)
+	apiGroup.GET("/categories", categoryController.GetCategories)
 
 }

@@ -25,7 +25,7 @@ func (ctx *TagService) AddTag(name string) (model.Tag, error) {
 	return tag, nil
 }
 
-func (ctx *TagService) updateTag(id uint, name string) (model.Tag, error) {
+func (ctx *TagService) UpdateTag(id uint, name string) (model.Tag, error) {
 	db := ctx.Base.DB
 
 	var tag model.Tag
@@ -45,7 +45,7 @@ func (ctx *TagService) updateTag(id uint, name string) (model.Tag, error) {
 
 }
 
-func (ctx *TagService) getTag(id uint) (model.Tag, error) {
+func (ctx *TagService) GetTag(id uint) (model.Tag, error) {
 	db := ctx.Base.DB
 
 	var tag model.Tag
@@ -59,16 +59,9 @@ func (ctx *TagService) getTag(id uint) (model.Tag, error) {
 
 }
 
-func (ctx *TagService) getTags() ([]model.Tag, error) {
-	db := ctx.Base.DB
+func (ctx *TagService) GetTags(pageSize uint, pageNo uint) (model.Page, error) {
 
-	var tags []model.Tag
-
-	if err := db.Find(&tags).Error; err != nil {
-		return []model.Tag{}, err
-	}
-
-	return tags, nil
+	return model.Page{}, nil
 
 }
 

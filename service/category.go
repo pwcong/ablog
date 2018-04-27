@@ -21,7 +21,7 @@ func (ctx *CategoryService) AddCategory(name string) (model.Category, error) {
 	return category, db.Create(&category).Error
 }
 
-func (ctx *CategoryService) updateCategory(id uint, name string) (model.Category, error) {
+func (ctx *CategoryService) UpdateCategory(id uint, name string) (model.Category, error) {
 	db := ctx.Base.DB
 
 	var category model.Category
@@ -37,7 +37,7 @@ func (ctx *CategoryService) updateCategory(id uint, name string) (model.Category
 
 }
 
-func (ctx *TagService) getCategory(id uint) (model.Category, error) {
+func (ctx *CategoryService) GetCategory(id uint) (model.Category, error) {
 	db := ctx.Base.DB
 
 	var category model.Category
@@ -51,16 +51,31 @@ func (ctx *TagService) getCategory(id uint) (model.Category, error) {
 
 }
 
-func (ctx *CategoryService) getCategories() ([]model.Category, error) {
+func (ctx *CategoryService) GetCategories(pageNo int, pageSize int) (model.Page, error) {
+
 	db := ctx.Base.DB
 
-	var categories []model.Category
+	var totalSize int
+	if err := db.Model(&model.Category{}).Count(&totalSize).Error; err != nil {
+		return model.Page{}, err
+	}
 
-	return categories, db.Find(&categories).Error
+	var categories []model.Category
+	if err := db.Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&categories).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	return model.Page{
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		CurrentSize: len(categories),
+		TotalSize:   totalSize,
+		Data:        categories,
+	}, nil
 
 }
 
-func (ctx *TagService) DelCategory(id uint) (model.Category, error) {
+func (ctx *CategoryService) DelCategory(id uint) (model.Category, error) {
 
 	db := ctx.Base.DB
 

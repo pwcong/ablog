@@ -1,11 +1,7 @@
 package model
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 type Attachment struct {
-	gorm.Model
+	BaseModel
 	Symbol   string `gorm:"not null;unique"`
 	Filename string `gorm:"not null"`
 	Year     string `gorm:"not null"`

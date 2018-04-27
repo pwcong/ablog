@@ -17,6 +17,5 @@ func Init(e *echo.Echo, conf *config.Config) {
 	corsConfig, ok := middlewaresConfig["cors"]
 	if ok && corsConfig.Active {
 		e.Use(middleware.CORS())
-
 	}
 }

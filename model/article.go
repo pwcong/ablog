@@ -1,11 +1,7 @@
 package model
 
-import (
-	"github.com/jinzhu/gorm"
-)
-
 type Article struct {
-	gorm.Model
+	BaseModel
 	Title       string
 	Banner      string
 	Category    Category
