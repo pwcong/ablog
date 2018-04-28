@@ -14,12 +14,14 @@ func (ctx *TagService) AddTag(name string) (model.Tag, error) {
 
 	db := ctx.Base.DB
 
-	notFound := db.Where("name = ?", name).First(&model.Tag{}).RecordNotFound()
+	var tag model.Tag
+
+	notFound := db.Where("name = ?", name).First(&tag).RecordNotFound()
 	if !notFound {
-		return model.Tag{}, errors.New("tag name is existed")
+		return tag, nil
 	}
 
-	tag := model.Tag{
+	tag = model.Tag{
 		Name: name,
 	}
 

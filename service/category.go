@@ -14,12 +14,14 @@ func (ctx *CategoryService) AddCategory(name string) (model.Category, error) {
 
 	db := ctx.Base.DB
 
-	notFound := db.Where("name = ?", name).First(&model.Category{}).RecordNotFound()
+	var category model.Category
+
+	notFound := db.Where("name = ?", name).First(&category).RecordNotFound()
 	if !notFound {
-		return model.Category{}, errors.New("category name is existed")
+		return category, nil
 	}
 
-	category := model.Category{
+	category = model.Category{
 		Name: name,
 	}
 
