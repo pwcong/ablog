@@ -14,6 +14,11 @@ func (ctx *CategoryService) AddCategory(name string) (model.Category, error) {
 
 	db := ctx.Base.DB
 
+	notFound := db.Where("name = ?", name).First(&model.Category{}).RecordNotFound()
+	if !notFound {
+		return model.Category{}, errors.New("category name is existed")
+	}
+
 	category := model.Category{
 		Name: name,
 	}
@@ -29,6 +34,15 @@ func (ctx *CategoryService) UpdateCategory(id uint, name string) (model.Category
 	notFound := db.Where("id = ?", id).First(&category).RecordNotFound()
 	if notFound {
 		return model.Category{}, errors.New("category is not existed")
+	}
+
+	if category.Name == name {
+		return category, nil
+	}
+
+	notFound = db.Where("name = ?", name).First(&model.Category{}).RecordNotFound()
+	if !notFound {
+		return model.Category{}, errors.New("category name is existed")
 	}
 
 	category.Name = name

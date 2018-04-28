@@ -2,8 +2,8 @@ package model
 
 type Evaluation struct {
 	BaseModel
-	IP        string
-	Score     int
-	Content   string `gorm:"type:text;"`
-	ArticleID uint
+	IP        string `json:"ip"`
+	Score     int    `json:"score"`
+	Content   string `gorm:"type:text;" json:"content"`
+	ArticleID uint   `json:"article_id"`
 }

@@ -53,7 +53,7 @@ func (ctx *CategoryController) GetCategory(c echo.Context) error {
 		return err
 	}
 
-	return BaseResponse(c, true, STATUS_OK, "get categories successfully", category)
+	return BaseResponse(c, true, STATUS_OK, "get category successfully", category)
 }
 
 func (ctx *CategoryController) DelCategory(c echo.Context) error {
@@ -72,7 +72,7 @@ func (ctx *CategoryController) DelCategory(c echo.Context) error {
 		return err
 	}
 
-	return BaseResponse(c, true, STATUS_OK, "get categories successfully", nil)
+	return BaseResponse(c, true, STATUS_OK, "delete category successfully", nil)
 }
 
 func (ctx *CategoryController) UpdateCategory(c echo.Context) error {
@@ -100,7 +100,7 @@ func (ctx *CategoryController) UpdateCategory(c echo.Context) error {
 		return err
 	}
 
-	return BaseResponse(c, true, STATUS_OK, "get categories successfully", category)
+	return BaseResponse(c, true, STATUS_OK, "update category successfully", category)
 }
 
 func (ctx *CategoryController) AddCategory(c echo.Context) error {
@@ -121,5 +121,5 @@ func (ctx *CategoryController) AddCategory(c echo.Context) error {
 		return err
 	}
 
-	return BaseResponse(c, true, STATUS_OK, "get categories successfully", category)
+	return BaseResponse(c, true, STATUS_OK, "add category successfully", category)
 }

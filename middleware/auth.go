@@ -20,7 +20,6 @@ func (ctx *AuthMiddleware) AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 
 		var tokenString string
 		if err == nil {
-			fmt.Println(cookie.Value)
 			tokenString = cookie.Value
 		} else {
 			tokenString = c.Request().Header.Get("Token")

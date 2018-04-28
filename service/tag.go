@@ -14,15 +14,16 @@ func (ctx *TagService) AddTag(name string) (model.Tag, error) {
 
 	db := ctx.Base.DB
 
+	notFound := db.Where("name = ?", name).First(&model.Tag{}).RecordNotFound()
+	if !notFound {
+		return model.Tag{}, errors.New("tag name is existed")
+	}
+
 	tag := model.Tag{
 		Name: name,
 	}
 
-	if dbc := db.Create(&tag); dbc.Error != nil {
-		return model.Tag{}, dbc.Error
-	}
-
-	return tag, nil
+	return tag, db.Create(&tag).Error
 }
 
 func (ctx *TagService) UpdateTag(id uint, name string) (model.Tag, error) {
@@ -33,6 +34,15 @@ func (ctx *TagService) UpdateTag(id uint, name string) (model.Tag, error) {
 	notFound := db.Where("id = ?", id).First(&tag).RecordNotFound()
 	if notFound {
 		return model.Tag{}, errors.New("tag is not existed")
+	}
+
+	if tag.Name == name {
+		return tag, nil
+	}
+
+	notFound = db.Where("name = ?", name).First(&model.Tag{}).RecordNotFound()
+	if !notFound {
+		return model.Tag{}, errors.New("tag name is existed")
 	}
 
 	tag.Name = name
@@ -59,7 +69,7 @@ func (ctx *TagService) GetTags(pageNo int, pageSize int) (model.Page, error) {
 	db := ctx.Base.DB
 
 	var totalSize int
-	if err := db.Model(&model.Category{}).Count(&totalSize).Error; err != nil {
+	if err := db.Model(&model.Tag{}).Count(&totalSize).Error; err != nil {
 		return model.Page{}, err
 	}
 
