@@ -28,7 +28,7 @@ func (ctx *ArticleService) AddArticle(title string, content string, banner strin
 
 	var category model.Category
 	notFound := db.Where("id = ?", categoryId).First(&category).RecordNotFound()
-	if !notFound {
+	if notFound {
 		return model.Article{}, errors.New("category is not existed")
 	}
 

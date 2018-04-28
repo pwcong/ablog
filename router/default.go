@@ -25,6 +25,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	attachmentController := &controller.AttachmentController{Base: baseController}
 	categoryController := &controller.CategoryController{Base: baseController}
 	tagController := &controller.TagController{Base: baseController}
+	articleController := &controller.ArticleController{Base: baseController}
 
 	e.GET("/", indexController.Default)
 
@@ -49,4 +50,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.POST("/tag", tagController.AddTag, authMiddleware.AuthToken)
 	apiGroup.POST("/tag/:id", tagController.UpdateTag, authMiddleware.AuthToken)
 	apiGroup.POST("/tag/:id/delete", tagController.DelTag, authMiddleware.AuthToken)
+
+	/* 文章接口 */
+	apiGroup.POST("/article", articleController.AddArticle, authMiddleware.AuthToken)
 }
