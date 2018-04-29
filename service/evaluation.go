@@ -10,7 +10,7 @@ type EvaluationService struct {
 	Base *BaseService
 }
 
-func (ctx *EvaluationService) AddEvaluation(ip string, score int, content string, articleID uint) (model.Evaluation, error) {
+func (ctx *EvaluationService) AddEvaluation(articleID uint, ip string, score int, content string) (model.Evaluation, error) {
 
 	db := ctx.Base.DB
 
@@ -54,15 +54,49 @@ func (ctx *EvaluationService) GetEvaluation(id uint) (model.Evaluation, error) {
 
 }
 
-func (ctx *EvaluationService) GetEvaluations(articleID uint) ([]model.Evaluation, error) {
+func (ctx *EvaluationService) GetEvaluations(articleID uint, pageNo int, pageSize int) (model.Page, error) {
 	db := ctx.Base.DB
 
-	var evaluations []model.Evaluation
-
-	if err := db.Where("article_id = ?", articleID).Find(&evaluations).Error; err != nil {
-		return []model.Evaluation{}, err
+	var article model.Article
+	if notFound := db.Where("id = ?", articleID).First(&article).RecordNotFound(); notFound {
+		return model.Page{}, errors.New("article is not existed")
 	}
 
-	return evaluations, nil
+	totalSize := db.Model(&article).Association("Evaluations").Count()
+	var evaluations []model.Evaluation
+	if err := db.Model(&article).Offset((pageNo-1)*pageSize).Limit(pageSize).Related(&evaluations, "Evaluations").Error; err != nil {
+		return model.Page{}, err
+	}
+
+	return model.Page{
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		CurrentSize: len(evaluations),
+		TotalSize:   totalSize,
+		Data:        evaluations,
+	}, nil
+
+}
+
+func (ctx *EvaluationService) DelEvaluation(id uint) error {
+	db := ctx.Base.DB
+
+	var evaluation model.Evaluation
+	if notFound := db.Where("id = ?", id).First(&evaluation).RecordNotFound(); notFound {
+		return errors.New("evaluation is not existed")
+	}
+
+	tx := db.Begin()
+	if err := tx.Model(&evaluation).Association("Article").Clear().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Delete(&evaluation).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 
 }

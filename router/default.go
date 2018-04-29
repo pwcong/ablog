@@ -26,6 +26,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	categoryController := &controller.CategoryController{Base: baseController}
 	tagController := &controller.TagController{Base: baseController}
 	articleController := &controller.ArticleController{Base: baseController}
+	evaluatoinController := &controller.EvaluationController{Base: baseController}
 
 	e.GET("/", indexController.Default)
 
@@ -56,5 +57,12 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.GET("/articles", articleController.GetArticles)
 	apiGroup.GET("/article/:id", articleController.GetArticle)
 	apiGroup.GET("/article/:id/:flag", articleController.GetArticlesByFlagWithId)
+	apiGroup.POST("/article/:id/evaluate", evaluatoinController.AddEvaluation, authMiddleware.AuthToken)
 	apiGroup.POST("/article/:id/delete", articleController.DelArticle, authMiddleware.AuthToken)
+
+	/* 评论接口 */
+	apiGroup.GET("/evaluations/:id", evaluatoinController.GetEvaluations)
+	apiGroup.GET("/evaluation/:id", evaluatoinController.GetEvaluation)
+	apiGroup.POST("/evaluation/:id/delete", evaluatoinController.DelEvaluation, authMiddleware.AuthToken)
+
 }
