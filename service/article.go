@@ -41,7 +41,7 @@ func (ctx *ArticleService) DelArticle(id uint) error {
 	return tx.Commit().Error
 }
 
-func (ctx *ArticleService) AddArticle(title string, content string, banner string, categoryId uint, tagIds []uint) (model.Article, error) {
+func (ctx *ArticleService) AddArticle(title string, content string, banner string, categoryID uint, tagIDs []uint) (model.Article, error) {
 
 	db := ctx.Base.DB
 
@@ -58,7 +58,7 @@ func (ctx *ArticleService) AddArticle(title string, content string, banner strin
 	}
 
 	var category model.Category
-	notFound := db.Where("id = ?", categoryId).First(&category).RecordNotFound()
+	notFound := db.Where("id = ?", categoryID).First(&category).RecordNotFound()
 	if notFound {
 		return model.Article{}, errors.New("category is not existed")
 	}
@@ -69,7 +69,7 @@ func (ctx *ArticleService) AddArticle(title string, content string, banner strin
 	}
 
 	var tags []model.Tag
-	db.Where("id in (?)", tagIds).Find(&tags)
+	db.Where("id in (?)", tagIDs).Find(&tags)
 	if err := tx.Model(&article).Association("Tags").Append(tags).Error; err != nil {
 		tx.Rollback()
 		return model.Article{}, err
@@ -78,7 +78,7 @@ func (ctx *ArticleService) AddArticle(title string, content string, banner strin
 	return article, tx.Commit().Error
 }
 
-func (ctx *ArticleService) UpdateArticle(id uint, title string, content string, banner string, categoryId uint, tagIds []uint) (model.Article, error) {
+func (ctx *ArticleService) UpdateArticle(id uint, title string, content string, banner string, categoryID uint, tagIDs []uint) (model.Article, error) {
 
 	db := ctx.Base.DB
 
@@ -98,7 +98,7 @@ func (ctx *ArticleService) UpdateArticle(id uint, title string, content string, 
 	}
 
 	var category model.Category
-	notFound = db.Where("id = ?", categoryId).First(&category).RecordNotFound()
+	notFound = db.Where("id = ?", categoryID).First(&category).RecordNotFound()
 	if notFound {
 		return model.Article{}, errors.New("category is not existed")
 	}
@@ -109,7 +109,7 @@ func (ctx *ArticleService) UpdateArticle(id uint, title string, content string, 
 	}
 
 	var tags []model.Tag
-	db.Where("id in (?)", tagIds).Find(&tags)
+	db.Where("id in (?)", tagIDs).Find(&tags)
 	if err := tx.Model(&article).Association("Tags").Replace(tags).Error; err != nil {
 		tx.Rollback()
 		return model.Article{}, err
@@ -136,12 +136,12 @@ func (ctx *ArticleService) GetArticle(id uint) (model.Article, error) {
 
 }
 
-func (ctx *ArticleService) GetArticlesByCategoryId(categoryId uint, pageNo int, pageSize int) (model.Page, error) {
+func (ctx *ArticleService) GetArticlesByCategoryID(categoryID uint, pageNo int, pageSize int) (model.Page, error) {
 
 	db := ctx.Base.DB
 
 	var category model.Category
-	if notFound := db.Where("id = ?", categoryId).First(&category).RecordNotFound(); notFound {
+	if notFound := db.Where("id = ?", categoryID).First(&category).RecordNotFound(); notFound {
 		return model.Page{}, errors.New("category is not existed")
 	}
 
@@ -166,12 +166,12 @@ func (ctx *ArticleService) GetArticlesByCategoryId(categoryId uint, pageNo int, 
 
 }
 
-func (ctx *ArticleService) GetArticlesByTagId(tagId uint, pageNo int, pageSize int) (model.Page, error) {
+func (ctx *ArticleService) GetArticlesByTagID(tagID uint, pageNo int, pageSize int) (model.Page, error) {
 
 	db := ctx.Base.DB
 
 	var tag model.Tag
-	if notFound := db.Where("id = ?", tagId).First(&tag).RecordNotFound(); notFound {
+	if notFound := db.Where("id = ?", tagID).First(&tag).RecordNotFound(); notFound {
 		return model.Page{}, errors.New("tag is not existed")
 	}
 

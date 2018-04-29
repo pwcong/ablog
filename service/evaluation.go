@@ -14,14 +14,30 @@ func (ctx *EvaluationService) AddEvaluation(ip string, score int, content string
 
 	db := ctx.Base.DB
 
-	evaluation := model.Evaluation{
-		IP:        ip,
-		Score:     score,
-		Content:   content,
-		ArticleID: articleID,
+	var article model.Article
+	if notFound := db.Where("id = ?", articleID).First(&article).RecordNotFound(); notFound {
+		return model.Evaluation{}, errors.New("article is not existed")
 	}
 
-	return evaluation, db.Create(&evaluation).Error
+	evaluation := model.Evaluation{
+		IP:      ip,
+		Score:   score,
+		Content: content,
+	}
+
+	tx := db.Begin()
+
+	if err := tx.Create(&evaluation).Error; err != nil {
+		tx.Rollback()
+		return model.Evaluation{}, err
+	}
+
+	if err := tx.Model(&evaluation).Association("Article").Append(article).Error; err != nil {
+		tx.Rollback()
+		return model.Evaluation{}, err
+	}
+
+	return evaluation, tx.Commit().Error
 }
 
 func (ctx *EvaluationService) GetEvaluation(id uint) (model.Evaluation, error) {

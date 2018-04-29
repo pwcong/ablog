@@ -102,9 +102,9 @@ func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
 
 	var page model.Page
 	if flag == "category" {
-		page, err = service.GetArticlesByCategoryId(uint(id), pageNo, pageSize)
+		page, err = service.GetArticlesByCategoryID(uint(id), pageNo, pageSize)
 	} else if flag == "tag" {
-		page, err = service.GetArticlesByTagId(uint(id), pageNo, pageSize)
+		page, err = service.GetArticlesByTagID(uint(id), pageNo, pageSize)
 	}
 
 	if err != nil {
