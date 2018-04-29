@@ -53,6 +53,8 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 
 	/* 文章接口 */
 	apiGroup.POST("/article", articleController.AddArticle, authMiddleware.AuthToken)
+	apiGroup.GET("/articles", articleController.GetArticles)
 	apiGroup.GET("/article/:id", articleController.GetArticle)
 	apiGroup.GET("/article/:id/:flag", articleController.GetArticlesByFlagWithId)
+	apiGroup.POST("/article/:id/delete", articleController.DelArticle, authMiddleware.AuthToken)
 }

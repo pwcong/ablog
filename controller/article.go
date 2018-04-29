@@ -61,6 +61,24 @@ func (ctx *ArticleController) GetArticle(c echo.Context) error {
 	return BaseResponse(c, true, STATUS_OK, "get article successfully", article)
 }
 
+func (ctx *ArticleController) DelArticle(c echo.Context) error {
+
+	service := service.ArticleService{Base: ctx.Base.Service}
+
+	_id := c.Param("id")
+	id, err := strconv.Atoi(_id)
+	if err != nil {
+		return err
+	}
+
+	if err := service.DelArticle(uint(id)); err != nil {
+		return err
+	}
+
+	return BaseResponse(c, true, STATUS_OK, "delete article successfully", nil)
+
+}
+
 func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
 
 	service := service.ArticleService{Base: ctx.Base.Service}
@@ -94,4 +112,23 @@ func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
 	}
 
 	return BaseResponse(c, true, STATUS_OK, "get articles successfully", page)
+}
+
+func (ctx *ArticleController) GetArticles(c echo.Context) error {
+
+	service := service.ArticleService{Base: ctx.Base.Service}
+
+	form := new(ArticleForm)
+	if err := c.Bind(form); err != nil {
+		return err
+	}
+	pageNo, pageSize := ResolvePageParameter(form.PageNo, form.PageSize)
+
+	page, err := service.GetArticles(pageNo, pageSize)
+	if err != nil {
+		return err
+	}
+
+	return BaseResponse(c, true, STATUS_OK, "get articles successfully", page)
+
 }

@@ -23,6 +23,11 @@ func (ctx *ArticleService) DelArticle(id uint) error {
 
 	tx := db.Begin()
 
+	if err := tx.Model(&article).Association("Category").Clear().Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	if err := tx.Model(&article).Association("Tags").Clear().Error; err != nil {
 		tx.Rollback()
 		return err
@@ -123,11 +128,7 @@ func (ctx *ArticleService) GetArticle(id uint) (model.Article, error) {
 		return model.Article{}, errors.New("article is not existed")
 	}
 
-	if err := db.Preload("Category").First(&article).Error; err != nil {
-		return model.Article{}, err
-	}
-
-	if err := db.Preload("Tags").First(&article).Error; err != nil {
+	if err := db.Preload("Category").Preload("Tags").First(&article).Error; err != nil {
 		return model.Article{}, err
 	}
 
@@ -148,6 +149,10 @@ func (ctx *ArticleService) GetArticlesByCategoryId(categoryId uint, pageNo int, 
 
 	var articles []model.Article
 	if err := db.Model(&category).Offset((pageNo-1)*pageSize).Limit(pageSize).Related(&articles, "Articles").Error; err != nil {
+		return model.Page{}, err
+	}
+
+	if err := db.Preload("Category").Preload("Tags").Find(&articles).Error; err != nil {
 		return model.Page{}, err
 	}
 
@@ -174,6 +179,38 @@ func (ctx *ArticleService) GetArticlesByTagId(tagId uint, pageNo int, pageSize i
 
 	var articles []model.Article
 	if err := db.Model(&tag).Offset((pageNo-1)*pageSize).Limit(pageSize).Related(&articles, "Articles").Error; err != nil {
+		return model.Page{}, err
+	}
+
+	if err := db.Preload("Category").Preload("Tags").Find(&articles).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	return model.Page{
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		CurrentSize: len(articles),
+		TotalSize:   totalSize,
+		Data:        articles,
+	}, nil
+
+}
+
+func (ctx *ArticleService) GetArticles(pageNo int, pageSize int) (model.Page, error) {
+
+	db := ctx.Base.DB
+
+	var totalSize int
+	if err := db.Table("articles").Count(&totalSize).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	var articles []model.Article
+	if err := db.Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&articles).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	if err := db.Preload("Category").Preload("Tags").Find(&articles).Error; err != nil {
 		return model.Page{}, err
 	}
 

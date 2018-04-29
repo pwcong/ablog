@@ -72,7 +72,7 @@ func (ctx *CategoryService) GetCategories(pageNo int, pageSize int) (model.Page,
 	db := ctx.Base.DB
 
 	var totalSize int
-	if err := db.Model(&model.Category{}).Count(&totalSize).Error; err != nil {
+	if err := db.Table("categories").Count(&totalSize).Error; err != nil {
 		return model.Page{}, err
 	}
 
