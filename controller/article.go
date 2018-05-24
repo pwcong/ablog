@@ -41,6 +41,31 @@ func (ctx *ArticleController) AddArticle(c echo.Context) error {
 	return BaseResponse(c, true, STATUS_OK, "add article successfully", article)
 }
 
+func (ctx *ArticleController) UpdateArticle(c echo.Context) error {
+
+	service := service.ArticleService{Base: ctx.Base.Service}
+
+	_id := c.Param("id")
+
+	id, err := strconv.Atoi(_id)
+	if err != nil {
+		return err
+	}
+
+	form := new(ArticleForm)
+	if err := c.Bind(form); err != nil {
+		return err
+	}
+
+	article, err := service.UpdateArticle(uint(id), form.Title, form.Content, form.Banner, form.CategoryID, form.TagIDs)
+
+	if err != nil {
+		return err
+	}
+
+	return BaseResponse(c, true, STATUS_OK, "update article successfully", article)
+}
+
 func (ctx *ArticleController) GetArticle(c echo.Context) error {
 
 	service := service.ArticleService{Base: ctx.Base.Service}
@@ -83,6 +108,11 @@ func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
 
 	service := service.ArticleService{Base: ctx.Base.Service}
 
+	flag := c.Param("flag")
+	if flag != "category" && flag != "tag" {
+		return errors.New("invalid flag")
+	}
+
 	_id := c.Param("id")
 	id, err := strconv.Atoi(_id)
 	if err != nil {
@@ -94,11 +124,6 @@ func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
 		return err
 	}
 	pageNo, pageSize := ResolvePageParameter(form.PageNo, form.PageSize)
-
-	flag := c.Param("flag")
-	if flag != "category" && flag != "tag" {
-		return errors.New("invalid flag")
-	}
 
 	var page model.Page
 	if flag == "category" {

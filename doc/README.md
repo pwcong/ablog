@@ -4,14 +4,14 @@
 
 分页参数：
 
-* pageSize: 每页个数
-* pageNo: 页码
+* page_size: 每页个数
+* page_no: 页码
 
 请求示例：
 
 ```shell
-curl -X GET $API_BASE/imgs/?page_size=20&page_no=1 \
-  -H "Token: xxx"
+curl -X GET \
+  $API_BASE/xxx/?page_size=20&page_no=1
 ```
 
 相应结果：
@@ -19,11 +19,11 @@ curl -X GET $API_BASE/imgs/?page_size=20&page_no=1 \
 ```json
 {
   "success": true,      // 是否处理成功
-  "message": "xxx",     // 错误信息
   "code": 20000,        // 响应码
+  "message": "xxx",     // 错误信息
   "payload": {          // 主要内容
     "data": [],
-    "page_size": 5,
+    "page_size": 20,
     "page_no": 1,
     "total_size": 1,
     "total_no": 1
@@ -40,8 +40,8 @@ curl -X GET $API_BASE/imgs/?page_size=20&page_no=1 \
 ```json
 {
   "success": true,      // 是否处理成功
-  "message": "xxx",     // 错误信息
   "code": 20000,        // 响应码
+  "message": "xxx",     // 错误信息
   "payload": {          // 主要内容
     ...
   }

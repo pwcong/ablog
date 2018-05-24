@@ -70,14 +70,9 @@ func main() {
 		c.JSON(http.StatusOK, controller.BaseResponseJSON{
 			Success: false,
 			Code:    controller.STATUS_ERROR,
-			Message: err.Error(),
+			Message: err.Error() + ", url=" + c.Request().RequestURI,
 		})
 	}
-
-	// 视图渲染引擎
-	// e.Renderer = &view.Renderer{
-	// 	Templates: template.Must(template.ParseGlob("view/*.html")),
-	// }
 
 	// 初始化中间件
 	initMiddlewares(e, &conf)

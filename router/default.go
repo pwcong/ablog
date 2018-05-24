@@ -43,26 +43,27 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.GET("/category/:id", categoryController.GetCategory)
 	apiGroup.POST("/category", categoryController.AddCategory, authMiddleware.AuthToken)
 	apiGroup.POST("/category/:id", categoryController.UpdateCategory, authMiddleware.AuthToken)
-	apiGroup.POST("/category/:id/delete", categoryController.DelCategory, authMiddleware.AuthToken)
+	apiGroup.DELETE("/category/:id", categoryController.DelCategory, authMiddleware.AuthToken)
 
 	/* 标签接口 */
 	apiGroup.GET("/tags", tagController.GetTags)
 	apiGroup.GET("/tag/:id", tagController.GetTag)
 	apiGroup.POST("/tag", tagController.AddTag, authMiddleware.AuthToken)
 	apiGroup.POST("/tag/:id", tagController.UpdateTag, authMiddleware.AuthToken)
-	apiGroup.POST("/tag/:id/delete", tagController.DelTag, authMiddleware.AuthToken)
+	apiGroup.DELETE("/tag/:id", tagController.DelTag, authMiddleware.AuthToken)
 
 	/* 文章接口 */
 	apiGroup.POST("/article", articleController.AddArticle, authMiddleware.AuthToken)
 	apiGroup.GET("/articles", articleController.GetArticles)
 	apiGroup.GET("/article/:id", articleController.GetArticle)
-	apiGroup.GET("/article/:id/:flag", articleController.GetArticlesByFlagWithId)
+	apiGroup.POST("/article/:id", articleController.UpdateArticle)
+	apiGroup.GET("/articles/:flag/:id", articleController.GetArticlesByFlagWithId)
 	apiGroup.POST("/article/:id/evaluate", evaluatoinController.AddEvaluation, authMiddleware.AuthToken)
-	apiGroup.POST("/article/:id/delete", articleController.DelArticle, authMiddleware.AuthToken)
+	apiGroup.DELETE("/article/:id", articleController.DelArticle, authMiddleware.AuthToken)
 
 	/* 评论接口 */
 	apiGroup.GET("/evaluations/:id", evaluatoinController.GetEvaluations)
 	apiGroup.GET("/evaluation/:id", evaluatoinController.GetEvaluation)
-	apiGroup.POST("/evaluation/:id/delete", evaluatoinController.DelEvaluation, authMiddleware.AuthToken)
+	apiGroup.DELETE("/evaluation/:id", evaluatoinController.DelEvaluation, authMiddleware.AuthToken)
 
 }
