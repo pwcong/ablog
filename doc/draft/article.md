@@ -238,7 +238,7 @@ curl -X GET $API_BASE/api/articles/category/1
 
 ## 评论文章
 
-路径：`/api/article/:id/evaluation`
+路径：`/api/article/:id/evaluate`
 
 方法: `POST`
 
