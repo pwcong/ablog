@@ -147,8 +147,10 @@ func (ctx *ArticleService) GetArticlesByCategoryID(categoryID uint, pageNo int, 
 
 	totalSize := db.Model(&category).Association("Articles").Count()
 
+	offset, limit := ConvertPageParameter(pageNo, pageSize)
+
 	var articles []model.Article
-	if err := db.Model(&category).Offset((pageNo-1)*pageSize).Limit(pageSize).Related(&articles, "Articles").Error; err != nil {
+	if err := db.Model(&category).Offset(offset).Limit(limit).Related(&articles, "Articles").Error; err != nil {
 		return model.Page{}, err
 	}
 
@@ -177,8 +179,10 @@ func (ctx *ArticleService) GetArticlesByTagID(tagID uint, pageNo int, pageSize i
 
 	totalSize := db.Model(&tag).Association("Articles").Count()
 
+	offset, limit := ConvertPageParameter(pageNo, pageSize)
+
 	var articles []model.Article
-	if err := db.Model(&tag).Offset((pageNo-1)*pageSize).Limit(pageSize).Related(&articles, "Articles").Error; err != nil {
+	if err := db.Model(&tag).Offset(offset).Limit(limit).Related(&articles, "Articles").Error; err != nil {
 		return model.Page{}, err
 	}
 
@@ -206,7 +210,10 @@ func (ctx *ArticleService) GetArticles(pageNo int, pageSize int) (model.Page, er
 	}
 
 	var articles []model.Article
-	if err := db.Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&articles).Error; err != nil {
+
+	offset, limit := ConvertPageParameter(pageNo, pageSize)
+
+	if err := db.Offset(offset).Limit(limit).Find(&articles).Error; err != nil {
 		return model.Page{}, err
 	}
 

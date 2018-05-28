@@ -37,3 +37,19 @@ func (ctx *BaseService) Warn(ip string, action string) {
 func (ctx *BaseService) Error(ip string, action string) {
 	ctx.Log(INFO, ip, action)
 }
+
+func ConvertPageParameter(pageNo int, pageSize int) (int, int) {
+
+	offset := (pageNo - 1) * pageSize
+
+	if offset < 0 {
+		offset = -1
+	}
+
+	limit := pageSize
+	if limit < 0 {
+		limit = -1
+	}
+
+	return offset, limit
+}

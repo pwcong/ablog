@@ -64,7 +64,8 @@ func (ctx *EvaluationService) GetEvaluations(articleID uint, pageNo int, pageSiz
 
 	totalSize := db.Model(&article).Association("Evaluations").Count()
 	var evaluations []model.Evaluation
-	if err := db.Model(&article).Offset((pageNo-1)*pageSize).Limit(pageSize).Related(&evaluations, "Evaluations").Error; err != nil {
+	offset, limit := ConvertPageParameter(pageNo, pageSize)
+	if err := db.Model(&article).Offset(offset).Limit(limit).Related(&evaluations, "Evaluations").Error; err != nil {
 		return model.Page{}, err
 	}
 

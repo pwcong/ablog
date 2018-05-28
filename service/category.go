@@ -77,7 +77,8 @@ func (ctx *CategoryService) GetCategories(pageNo int, pageSize int) (model.Page,
 	}
 
 	var categories []model.Category
-	if err := db.Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&categories).Error; err != nil {
+	offset, limit := ConvertPageParameter(pageNo, pageSize)
+	if err := db.Offset(offset).Limit(limit).Find(&categories).Error; err != nil {
 		return model.Page{}, err
 	}
 
