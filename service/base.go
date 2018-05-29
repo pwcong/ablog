@@ -42,7 +42,7 @@ func ConvertPageParameter(pageNo int, pageSize int) (int, int) {
 
 	offset := (pageNo - 1) * pageSize
 
-	if offset < 0 {
+	if offset <= 0 {
 		offset = -1
 	}
 

@@ -38,8 +38,12 @@ func BaseResponse(c echo.Context, success bool, code int, message string, payloa
 
 func ResolvePageParameter(pageNo int, pageSize int) (int, int) {
 
-	if pageNo <= 0 || pageSize <= 0 {
-		return -1, -1
+	if pageNo < 1 {
+		pageNo = 1
+	}
+
+	if pageSize < 1 {
+		pageSize = -1
 	}
 
 	return pageNo, pageSize
