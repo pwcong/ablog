@@ -71,7 +71,7 @@ func (ctx *TagService) GetTags(pageNo int, pageSize int) (model.Page, error) {
 	db := ctx.Base.DB
 
 	var totalSize int
-	if err := db.Table("tags").Count(&totalSize).Error; err != nil {
+	if err := db.Table("tags").Where("deleted_at is not null").Count(&totalSize).Error; err != nil {
 		return model.Page{}, err
 	}
 

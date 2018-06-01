@@ -205,7 +205,7 @@ func (ctx *ArticleService) GetArticles(pageNo int, pageSize int) (model.Page, er
 	db := ctx.Base.DB
 
 	var totalSize int
-	if err := db.Table("articles").Count(&totalSize).Error; err != nil {
+	if err := db.Table("articles").Where("deleted_at is not null").Count(&totalSize).Error; err != nil {
 		return model.Page{}, err
 	}
 
