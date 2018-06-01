@@ -1,7 +1,7 @@
 {
-  "name": "order-system-doc-api",
+  "name": "ablog-docs",
   "version": "1.0.0",
-  "description": "API Document for Order System.",
+  "description": "API Document for ABlog.",
   "scripts": {
     "start": "docsify serve ./"
   },
