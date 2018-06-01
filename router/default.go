@@ -13,7 +13,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 
 	e.Static("/", "view/dist")
 	e.Static("/public", "public")
-	e.Static("/doc", "doc")
+	e.Static("/docs", "docs")
 
 	authMiddleware := middleware.AuthMiddleware{Conf: conf}
 
