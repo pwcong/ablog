@@ -57,7 +57,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.GET("/articles", articleController.GetArticles)
 	apiGroup.GET("/article/:id", articleController.GetArticle)
 	apiGroup.POST("/article/:id", articleController.UpdateArticle)
-	apiGroup.GET("/articles/:flag/:id", articleController.GetArticlesByFlagWithId)
+	apiGroup.GET("/articles/:filter/:id", articleController.GetArticlesByFilter)
 	apiGroup.POST("/article/:id/evaluate", evaluatoinController.AddEvaluation, authMiddleware.AuthToken)
 	apiGroup.DELETE("/article/:id", articleController.DelArticle, authMiddleware.AuthToken)
 

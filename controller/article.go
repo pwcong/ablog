@@ -104,13 +104,13 @@ func (ctx *ArticleController) DelArticle(c echo.Context) error {
 
 }
 
-func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
+func (ctx *ArticleController) GetArticlesByFilter(c echo.Context) error {
 
 	service := service.ArticleService{Base: ctx.Base.Service}
 
-	flag := c.Param("flag")
-	if flag != "category" && flag != "tag" {
-		return errors.New("invalid flag")
+	filter := c.Param("filter")
+	if filter != "category" && filter != "tag" {
+		return errors.New("invalid filter")
 	}
 
 	_id := c.Param("id")
@@ -126,9 +126,9 @@ func (ctx *ArticleController) GetArticlesByFlagWithId(c echo.Context) error {
 	pageNo, pageSize := ResolvePageParameter(form.PageNo, form.PageSize)
 
 	var page model.Page
-	if flag == "category" {
+	if filter == "category" {
 		page, err = service.GetArticlesByCategoryID(uint(id), pageNo, pageSize)
-	} else if flag == "tag" {
+	} else if filter == "tag" {
 		page, err = service.GetArticlesByTagID(uint(id), pageNo, pageSize)
 	}
 
