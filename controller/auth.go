@@ -49,7 +49,7 @@ func (ctx *AuthController) Login(c echo.Context) error {
 
 	cookie := new(http.Cookie)
 	cookie.Path = "/"
-	cookie.Name = "Token"
+	cookie.Name = "TOKEN"
 	cookie.Value = t
 	cookie.Expires = now.Add(time.Duration(expiredTime/3600) * time.Hour)
 	c.SetCookie(cookie)

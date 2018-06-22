@@ -10,6 +10,7 @@ import (
 	"github.com/pwcong/ablog/config"
 	"github.com/pwcong/ablog/controller"
 	"github.com/pwcong/ablog/db"
+	"github.com/pwcong/ablog/errors"
 	"github.com/pwcong/ablog/middleware"
 	"github.com/pwcong/ablog/model"
 	"github.com/pwcong/ablog/router"
@@ -67,11 +68,23 @@ func main() {
 
 		e.Logger.Error(err)
 
-		c.JSON(http.StatusOK, controller.BaseResponseJSON{
-			Success: false,
-			Code:    controller.STATUS_ERROR,
-			Message: err.Error() + ", url=" + c.Request().RequestURI,
-		})
+		res, ok := err.(*errors.HTTPError)
+
+		if ok {
+
+			c.JSON(res.Status(), controller.BaseResponseJSON{
+				Success: false,
+				Code:    res.Code(),
+				Message: res.Error() + ", url=" + c.Request().RequestURI,
+			})
+		} else {
+
+			c.JSON(http.StatusBadRequest, controller.BaseResponseJSON{
+				Success: false,
+				Code:    controller.STATUS_ERROR,
+				Message: err.Error() + ", url=" + c.Request().RequestURI,
+			})
+		}
 	}
 
 	// 初始化中间件

@@ -1,12 +1,14 @@
 package middleware
 
 import (
-	"errors"
 	"fmt"
+	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/pwcong/ablog/config"
+	"github.com/pwcong/ablog/controller"
+	"github.com/pwcong/ablog/errors"
 )
 
 type AuthMiddleware struct {
@@ -16,17 +18,18 @@ type AuthMiddleware struct {
 func (ctx *AuthMiddleware) AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		cookie, err := c.Request().Cookie("Token")
+		cookie, err := c.Request().Cookie("TOKEN")
 
 		var tokenString string
+
 		if err == nil {
 			tokenString = cookie.Value
 		} else {
-			tokenString = c.Request().Header.Get("Token")
+			tokenString = c.Request().Header.Get("token")
 		}
 
 		if tokenString == "" {
-			return errors.New("lack of token")
+			return errors.NewHTTPError(http.StatusForbidden, controller.STATUS_ERROR, "lack of token")
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -39,11 +42,11 @@ func (ctx *AuthMiddleware) AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 		})
 
 		if err != nil {
-			return errors.New("invalid token")
+			return errors.NewHTTPError(http.StatusUnauthorized, controller.STATUS_ERROR, "invalid token")
 		}
 
 		if _, ok := token.Claims.(jwt.MapClaims); !ok || !token.Valid {
-			return errors.New("invalid token")
+			return errors.NewHTTPError(http.StatusUnauthorized, controller.STATUS_ERROR, "invalid token")
 		}
 
 		return next(c)
