@@ -33,6 +33,7 @@ func initDB(db *gorm.DB) {
 		&model.Tag{},
 		&model.Category{},
 		&model.Evaluation{},
+		&model.Counter{},
 	)
 }
 

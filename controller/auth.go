@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
@@ -23,15 +24,15 @@ func (ctx *AuthController) Login(c echo.Context) error {
 
 	uf := new(AuthForm)
 	if err := c.Bind(uf); err != nil {
-		return BaseResponse(c, false, STATUS_ERROR, "invalid params", struct{}{})
+		return err
 	}
 
 	if uf.Username == "" || uf.Password == "" {
-		return BaseResponse(c, false, STATUS_ERROR, "params not enough", struct{}{})
+		return errors.New("username and password can not be empty")
 	}
 
 	if uf.Username != ctx.Base.Conf.Auth.Username || uf.Password != ctx.Base.Conf.Auth.Password {
-		return BaseResponse(c, false, STATUS_ERROR, "invalid username or password", struct{}{})
+		return errors.New("invalid username or password")
 	}
 
 	now := time.Now()
@@ -44,7 +45,7 @@ func (ctx *AuthController) Login(c echo.Context) error {
 
 	t, err := token.SignedString([]byte(ctx.Base.Conf.Auth.Secret))
 	if err != nil {
-		BaseResponse(c, false, STATUS_ERROR, err.Error(), struct{}{})
+		return err
 	}
 
 	cookie := new(http.Cookie)

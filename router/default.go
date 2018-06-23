@@ -27,6 +27,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	tagController := &controller.TagController{Base: baseController}
 	articleController := &controller.ArticleController{Base: baseController}
 	evaluatoinController := &controller.EvaluationController{Base: baseController}
+	counterController := &controller.CounterController{Base: baseController}
 
 	e.GET("/", indexController.Default)
 
@@ -65,5 +66,9 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.GET("/evaluations/:id", evaluatoinController.GetEvaluations)
 	apiGroup.GET("/evaluation/:id", evaluatoinController.GetEvaluation)
 	apiGroup.DELETE("/evaluation/:id", evaluatoinController.DelEvaluation, authMiddleware.AuthToken)
+
+	/* 计数接口 */
+	apiGroup.POST("/counter", counterController.PlusCounter)
+	apiGroup.GET("/counter/:key/:id", counterController.GetCounter)
 
 }

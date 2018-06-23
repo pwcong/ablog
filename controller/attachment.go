@@ -10,6 +10,10 @@ type AttachmentController struct {
 	Base *BaseController
 }
 
+type AttachmentForm struct {
+	Symbol string `form:"symbol"`
+}
+
 func (ctx *AttachmentController) Upload(c echo.Context) error {
 
 	service := service.AttachmentService{Base: ctx.Base.Service}
@@ -18,15 +22,29 @@ func (ctx *AttachmentController) Upload(c echo.Context) error {
 
 	file, err := c.FormFile("file")
 	if file == nil || err != nil {
-		return BaseResponse(c, false, STATUS_ERROR, err.Error(), struct{}{})
+		return err
+	}
+
+	form := new(AttachmentForm)
+	if err = c.Bind(form); err != nil {
+		return err
 	}
 
 	var att model.Attachment
+	if form.Symbol != "" {
+		_att, _err := service.GetAttachmentBySymbol(form.Symbol)
+		if _err != nil {
+			att, err = service.SaveAttachment(file)
+		} else {
+			att = _att
+		}
 
-	att, err = service.SaveAttachment(file)
+	} else {
+		att, err = service.SaveAttachment(file)
+	}
 
 	if err != nil {
-		return BaseResponse(c, false, STATUS_ERROR, err.Error(), struct{}{})
+		return err
 	}
 
 	return BaseResponse(c, true, STATUS_OK, "upload successfully", struct {

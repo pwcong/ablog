@@ -3,6 +3,7 @@ package service
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"errors"
 	"io/ioutil"
 	"mime/multipart"
 	"os"
@@ -32,6 +33,20 @@ func GetExtension(filename string) string {
 	return res[1]
 }
 
+func (ctx *AttachmentService) GetAttachmentBySymbol(symbol string) (model.Attachment, error) {
+
+	db := ctx.Base.DB
+
+	var attachment model.Attachment
+
+	if notFound := db.Where("symbol = ?", symbol).First(&attachment).RecordNotFound(); notFound {
+		return model.Attachment{}, errors.New("attachment is not existed")
+	}
+
+	return attachment, nil
+
+}
+
 func (ctx *AttachmentService) SaveAttachment(file *multipart.FileHeader) (model.Attachment, error) {
 	src, err := file.Open()
 	if err != nil {
@@ -53,14 +68,14 @@ func (ctx *AttachmentService) SaveAttachment(file *multipart.FileHeader) (model.
 
 	symbol := hex.EncodeToString(h.Sum(nil))
 
-	var img model.Attachment
+	var attachment model.Attachment
 
 	db := ctx.Base.DB
 	now := time.Now()
 
-	notFound := db.Where("symbol = ?", symbol).First(&img).RecordNotFound()
+	notFound := db.Where("symbol = ?", symbol).First(&attachment).RecordNotFound()
 	if notFound {
-		img = model.Attachment{
+		attachment = model.Attachment{
 			Symbol:   symbol,
 			Filename: file.Filename,
 			Year:     now.Format("2006"),
@@ -74,20 +89,20 @@ func (ctx *AttachmentService) SaveAttachment(file *multipart.FileHeader) (model.
 			root = filepath.Dir(os.Args[0])
 		}
 
-		dir := filepath.Join(root, "public/"+img.Year+"/"+img.Month+"/"+img.Date)
+		dir := filepath.Join(root, "public/"+attachment.Year+"/"+attachment.Month+"/"+attachment.Date)
 
 		err = os.MkdirAll(dir, 0666)
 		if err != nil {
 			return model.Attachment{}, err
 		}
 
-		err = ioutil.WriteFile(filepath.Join(dir, img.Symbol+"."+img.ExtName), buffer, 0666)
+		err = ioutil.WriteFile(filepath.Join(dir, attachment.Symbol+"."+attachment.ExtName), buffer, 0666)
 		if err != nil {
 			return model.Attachment{}, err
 		}
 
-		db.Create(&img)
+		db.Create(&attachment)
 	}
 
-	return img, nil
+	return attachment, nil
 }
