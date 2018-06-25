@@ -12,6 +12,7 @@ const DEFAULT_CONFIG = `
 [server]
 host = "0.0.0.0"
 port = 7001
+dev = "true"
 
 [auth]
 username = "root"
@@ -53,6 +54,7 @@ type AuthConfig struct {
 type serverConfig struct {
 	Host string
 	Port int
+	Dev  bool
 }
 
 type databaseConfig struct {
@@ -80,7 +82,7 @@ func Initialize() (Config, error) {
 		root = filepath.Dir(os.Args[0])
 	}
 
-	_, err = toml.DecodeFile(filepath.Join(root, "config/default.toml"), &conf)
+	_, err = toml.DecodeFile(filepath.Join(root, "config/ablog.toml"), &conf)
 
 	if err == nil {
 

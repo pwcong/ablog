@@ -104,6 +104,31 @@ func (ctx *ArticleController) DelArticle(c echo.Context) error {
 
 }
 
+func (ctx *ArticleController) SearchArticles(c echo.Context) error {
+
+	service := service.ArticleService{Base: ctx.Base.Service}
+
+	filter := c.Param("filter")
+	if filter != "title" && filter != "content" {
+		return errors.New("invalid filter")
+	}
+
+	value := c.Param("value")
+	form := new(ArticleForm)
+	if err := c.Bind(form); err != nil {
+		return err
+	}
+
+	pageNo, pageSize := ResolvePageParameter(form.PageNo, form.PageSize)
+	page, err := service.SearchArticles(filter, value, pageNo, pageSize)
+
+	if err != nil {
+		return err
+	}
+
+	return BaseResponse(c, true, STATUS_OK, "search articles successfully", page)
+}
+
 func (ctx *ArticleController) GetArticlesByFilter(c echo.Context) error {
 
 	service := service.ArticleService{Base: ctx.Base.Service}

@@ -45,6 +45,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// 连接数据库
 	mySQLConfig, ok := conf.Databases["mysql"]
 	if !ok {
 		log.Fatal("Can not load configuration of MySQL")
@@ -58,10 +59,15 @@ func main() {
 		mySQLConfig.Host+":"+strconv.Itoa(mySQLConfig.Port),
 		mySQLConfig.DBName)
 
+	if conf.Server.Dev {
+		orm.DB.LogMode(true)
+	}
+
 	defer orm.Close()
 
 	initDB(orm.DB)
 
+	// 新建服务
 	e := echo.New()
 
 	// 全局错误处理

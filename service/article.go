@@ -136,6 +136,32 @@ func (ctx *ArticleService) GetArticle(id uint) (model.Article, error) {
 
 }
 
+func (ctx *ArticleService) SearchArticles(filter string, value string, pageNo int, pageSize int) (model.Page, error) {
+
+	db := ctx.Base.DB
+
+	var totalSize int
+	if err := db.Table("articles").Where("deleted_at is null and "+filter+" like ?", "%"+value+"%").Count(&totalSize).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	offset, limit := ConvertPageParameter(pageNo, pageSize)
+
+	var articles []model.Article
+	if err := db.Where(filter+" like ?", "%"+value+"%").Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Find(&articles).Error; err != nil {
+		return model.Page{}, err
+	}
+
+	return model.Page{
+		PageNo:      pageNo,
+		PageSize:    pageSize,
+		CurrentSize: len(articles),
+		TotalSize:   totalSize,
+		Data:        articles,
+	}, nil
+
+}
+
 func (ctx *ArticleService) GetArticlesByCategoryID(categoryID uint, pageNo int, pageSize int) (model.Page, error) {
 
 	db := ctx.Base.DB
