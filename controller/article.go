@@ -138,7 +138,7 @@ func (ctx *ArticleController) GetArticlesByFilter(c echo.Context) error {
 		return errors.New("invalid filter")
 	}
 
-	_id := c.Param("id")
+	_id := c.Param("value")
 	id, err := strconv.Atoi(_id)
 	if err != nil {
 		return err

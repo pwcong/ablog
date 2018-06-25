@@ -167,7 +167,7 @@ curl -X GET $API_BASE/api/article/1
 
 ## 获取文章列表（筛选）
 
-路径：`/api/articles/:flag/:id`
+路径：`/api/articles/:flag/:value`
 
 路径参数：
 
@@ -176,7 +176,7 @@ curl -X GET $API_BASE/api/article/1
   - category：按分类筛选
   - tag：按标签筛选
 
-- id：筛选类型 ID
+- value：筛选值
 
 方法: `GET`
 
@@ -248,7 +248,7 @@ curl -X GET $API_BASE/api/articles/category/1
   - title：按标题查询
   - content：按内容查询
 
-- value：查询条件
+- value：查询值
 
 方法: `GET`
 
