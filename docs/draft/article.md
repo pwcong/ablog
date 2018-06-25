@@ -1,12 +1,13 @@
 # 文章接口
 
-* 新增文章（需管理员权限）
-* 获取文章列表
-* 获取文章详情
-* 获取文章列表（筛选）
-* 评论文章
-* 修改文章（需管理员权限）
-* 删除文章（需管理员权限）
+- 新增文章（需管理员权限）
+- 获取文章列表
+- 获取文章详情
+- 获取文章列表（筛选）
+- 查询文章列表（筛选）
+- 评论文章
+- 修改文章（需管理员权限）
+- 删除文章（需管理员权限）
 
 ## 新增文章（需管理员权限）
 
@@ -16,11 +17,11 @@
 
 请求参数:
 
-* title：标题
-* content：内容
-* banner：横幅 url
-* category_id：分类 ID
-* tag_ids：标签 ID 数组
+- title：标题
+- content：内容
+- banner：横幅 url
+- category_id：分类 ID
+- tag_ids：标签 ID 数组
 
 请求示例：
 
@@ -84,7 +85,7 @@ curl -X POST \
 
 其他：
 
-* 支持分页
+- 支持分页
 
 请求示例：
 
@@ -117,7 +118,7 @@ curl -X GET $API_BASE/api/articles
 
 路径参数:
 
-* id：文章 ID
+- id：文章 ID
 
 请求示例：
 
@@ -170,18 +171,18 @@ curl -X GET $API_BASE/api/article/1
 
 路径参数：
 
-* flag：筛选类型，可选值有：
+- flag：筛选类型，可选值有：
 
-  * category：按分类筛选
-  * tag：按标签筛选
+  - category：按分类筛选
+  - tag：按标签筛选
 
-* id：筛选类型 ID
+- id：筛选类型 ID
 
 方法: `GET`
 
 其他：
 
-* 支持分页
+- 支持分页
 
 请求示例：
 
@@ -236,6 +237,78 @@ curl -X GET $API_BASE/api/articles/category/1
 }
 ```
 
+## 查询文章列表（筛选）
+
+路径：`/api/articles/search/:flag/:value`
+
+路径参数：
+
+- flag：筛选类型，可选值有：
+
+  - title：按标题查询
+  - content：按内容查询
+
+- value：查询条件
+
+方法: `GET`
+
+其他：
+
+- 支持分页
+
+请求示例：
+
+```shell
+curl -X GET $API_BASE/api/articles/search/title/ABlog
+```
+
+返回值：
+
+```json
+{
+  "success": true,
+  "code": 20000,
+  "message": "search articles successfully",
+  "payload": {
+    "page_no": -1,
+    "page_size": -1,
+    "current_size": 1,
+    "total_size": 1,
+    "data": [
+      {
+        "id": 1,
+        "created_at": "2018-05-24T22:42:49+08:00",
+        "updated_at": "2018-05-24T22:42:49+08:00",
+        "deleted_at": null,
+        "title": "Test",
+        "content": "Hello ABlog!",
+        "banner": "http://ablog.png",
+        "category": {
+          "id": 1,
+          "created_at": "2018-05-24T22:24:18+08:00",
+          "updated_at": "2018-05-24T22:46:53+08:00",
+          "deleted_at": null,
+          "name": "ABlog",
+          "articles": null
+        },
+        "category_id": 1,
+        "tags": [
+          {
+            "id": 1,
+            "created_at": "2018-05-24T22:34:40+08:00",
+            "updated_at": "2018-05-24T22:34:40+08:00",
+            "deleted_at": null,
+            "name": "HAHA",
+            "articles": null
+          }
+        ],
+        "evaluations": null
+      }
+    ]
+  }
+}
+```
+
 ## 评论文章
 
 路径：`/api/article/:id/evaluate`
@@ -244,12 +317,12 @@ curl -X GET $API_BASE/api/articles/category/1
 
 路径参数：
 
-* id：文章 ID
+- id：文章 ID
 
 请求参数:
 
-* score：评分
-* content：评论内容
+- score：评分
+- content：评论内容
 
 请求示例：
 
@@ -311,15 +384,15 @@ curl -X POST \
 
 路径参数
 
-* id：文章 ID
+- id：文章 ID
 
 请求参数:
 
-* title：标题
-* content：内容
-* banner：横幅 url
-* category_id：分类 ID
-* tag_ids：标签 ID 数组
+- title：标题
+- content：内容
+- banner：横幅 url
+- category_id：分类 ID
+- tag_ids：标签 ID 数组
 
 请求示例：
 
@@ -383,7 +456,7 @@ curl -X POST \
 
 路径参数:
 
-* id：分类 ID
+- id：分类 ID
 
 请求示例：
 
