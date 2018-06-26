@@ -58,7 +58,7 @@ func (ctx *CategoryService) GetCategory(id uint) (model.Category, error) {
 
 	var category model.Category
 
-	notFound := db.Where("id = ?", id).First(&category).RecordNotFound()
+	notFound := db.Preload("Articles").Where("id = ?", id).First(&category).RecordNotFound()
 	if notFound {
 		return model.Category{}, errors.New("category is not existed")
 	}
@@ -78,7 +78,7 @@ func (ctx *CategoryService) GetCategories(pageNo int, pageSize int) (model.Page,
 
 	var categories []model.Category
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
-	if err := db.Offset(offset).Limit(limit).Find(&categories).Error; err != nil {
+	if err := db.Preload("Articles").Offset(offset).Limit(limit).Find(&categories).Error; err != nil {
 		return model.Page{}, err
 	}
 
