@@ -63,6 +63,10 @@ func (ctx *TagService) GetTag(id uint) (model.Tag, error) {
 		return model.Tag{}, errors.New("tag is not existed")
 	}
 
+	for i, _ := range tag.Articles {
+		tag.Articles[i].Content = ""
+	}
+
 	return tag, nil
 
 }
@@ -79,6 +83,12 @@ func (ctx *TagService) GetTags(pageNo int, pageSize int) (model.Page, error) {
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
 	if err := db.Preload("Articles").Offset(offset).Limit(limit).Find(&tags).Error; err != nil {
 		return model.Page{}, err
+	}
+
+	for i, _ := range tags {
+		for j, _ := range tags[i].Articles {
+			tags[i].Articles[j].Content = ""
+		}
 	}
 
 	return model.Page{

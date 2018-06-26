@@ -63,6 +63,10 @@ func (ctx *CategoryService) GetCategory(id uint) (model.Category, error) {
 		return model.Category{}, errors.New("category is not existed")
 	}
 
+	for i, _ := range category.Articles {
+		category.Articles[i].Content = ""
+	}
+
 	return category, nil
 
 }
@@ -80,6 +84,12 @@ func (ctx *CategoryService) GetCategories(pageNo int, pageSize int) (model.Page,
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
 	if err := db.Preload("Articles").Offset(offset).Limit(limit).Find(&categories).Error; err != nil {
 		return model.Page{}, err
+	}
+
+	for i, _ := range categories {
+		for j, _ := range categories[i].Articles {
+			categories[i].Articles[j].Content = ""
+		}
 	}
 
 	return model.Page{
