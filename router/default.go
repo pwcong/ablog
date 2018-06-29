@@ -60,7 +60,7 @@ func Init(e *echo.Echo, conf *config.Config, db *gorm.DB) {
 	apiGroup.POST("/article/:id", articleController.UpdateArticle)
 	apiGroup.GET("/articles/:filter/:value", articleController.GetArticlesByFilter)
 	apiGroup.GET("/articles/search/:filter/:value", articleController.SearchArticles)
-	apiGroup.POST("/article/:id/evaluate", evaluatoinController.AddEvaluation, authMiddleware.AuthToken)
+	apiGroup.POST("/article/:id/evaluate", evaluatoinController.AddEvaluation)
 	apiGroup.DELETE("/article/:id", articleController.DelArticle, authMiddleware.AuthToken)
 
 	/* 评论接口 */

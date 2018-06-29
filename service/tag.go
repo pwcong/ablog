@@ -81,7 +81,7 @@ func (ctx *TagService) GetTags(pageNo int, pageSize int) (model.Page, error) {
 
 	var tags []model.Tag
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
-	if err := db.Preload("Articles").Offset(offset).Limit(limit).Find(&tags).Error; err != nil {
+	if err := db.Order("created_at desc").Preload("Articles").Offset(offset).Limit(limit).Find(&tags).Error; err != nil {
 		return model.Page{}, err
 	}
 

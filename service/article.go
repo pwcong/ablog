@@ -148,7 +148,7 @@ func (ctx *ArticleService) SearchArticles(filter string, value string, pageNo in
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
 
 	var articles []model.Article
-	if err := db.Where(filter+" like ?", "%"+value+"%").Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Find(&articles).Error; err != nil {
+	if err := db.Order("created_at desc").Where(filter+" like ?", "%"+value+"%").Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Find(&articles).Error; err != nil {
 		return model.Page{}, err
 	}
 
@@ -176,7 +176,7 @@ func (ctx *ArticleService) GetArticlesByCategoryID(categoryID uint, pageNo int, 
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
 
 	var articles []model.Article
-	if err := db.Model(&category).Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Related(&articles, "Articles").Error; err != nil {
+	if err := db.Order("created_at desc").Model(&category).Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Related(&articles, "Articles").Error; err != nil {
 		return model.Page{}, err
 	}
 
@@ -204,7 +204,7 @@ func (ctx *ArticleService) GetArticlesByTagID(tagID uint, pageNo int, pageSize i
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
 
 	var articles []model.Article
-	if err := db.Model(&tag).Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Related(&articles, "Articles").Error; err != nil {
+	if err := db.Order("created_at desc").Model(&tag).Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Related(&articles, "Articles").Error; err != nil {
 		return model.Page{}, err
 	}
 
@@ -231,7 +231,7 @@ func (ctx *ArticleService) GetArticles(pageNo int, pageSize int) (model.Page, er
 
 	offset, limit := ConvertPageParameter(pageNo, pageSize)
 
-	if err := db.Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Find(&articles).Error; err != nil {
+	if err := db.Order("created_at desc").Preload("Category").Preload("Tags").Offset(offset).Limit(limit).Find(&articles).Error; err != nil {
 		return model.Page{}, err
 	}
 
