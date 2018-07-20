@@ -29,7 +29,7 @@ func (ctx *AuthMiddleware) AuthToken(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		if tokenString == "" {
-			return errors.NewHTTPError(http.StatusForbidden, controller.STATUS_ERROR, "lack of token")
+			return errors.NewHTTPError(http.StatusUnauthorized, controller.STATUS_ERROR, "lack of token")
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
